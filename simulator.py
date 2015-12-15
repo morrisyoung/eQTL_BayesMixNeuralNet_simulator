@@ -1,30 +1,87 @@
 ## Input: SNPs (independent sites), 0/1 binary array
 ## Output: expression level for some genes
 ## function: generate the coefficients according to the specified graphical model (the neural model in a Bayesian approach), and generate the corresponding expression level for ALL genes
+## notes:
+##	1. we should simulate tissue specificity, as the modeling takes consideration of that;
+##	2. xxx
+##	3. xxx
 
 
 import numpy as np
 
 
+##==== global variables
+## notes: TODO
+##	1. shall we simulate Spike and Slab?
+##	2. xxx
+##=====================
+#==== individual
+n_individual = 0
+
+#==== SNP
+n_SNP = 0
+SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
+SNP_pos_list = []
+SNP_beta_rep = {tissue:{gene:[], xxx:[], ...}, xxx:{}, ...}	# cis- SNP beta lists for different genes in tissuess
+
+#==== gene
+n_gene = 0
+gene_list = []
+gene_pos_list = []
+
+#==== SNP gene pos map
+pos_map = {}							# {0:[n_1, n_2], 1:[n_1,n_2], ...}
+
+#==== factor_cell
+n_factor_cell = 0
+factor_cell_beta_rep = {cell factor:[], xxx:[], ...}		# coefficient lists for cell factors
+beta_factor_cell_rep = {tissue:{gene:[], xxx:[], ...}, ...}	# coefficient lists of cell factors for genes in tissues
+
+#==== factor_batch (analogous to cell factor pathway)
+n_factor_batch = 0						# n_factor_batch = n_factor_batch_individual + n_factor_batch_sample
+n_factor_batch_individual = 0
+n_factor_batch_sample = 0
+factor_batch_beta_rep = {batch factor:[], xxx:[], ...}		# coefficient lists for batch factors
+
+#==== batch variables (will be concatenated from following individual factors and tissue sample factors)
+batch_individual_rep = {0:[], 1:[], ...}			# batch variable lists for individuals
+batch_tissue_sample_rep = {individual:{tissue:[], ...}, ...}	# batch variable lists for tissue samples in individuals
+
+#==== tissue
+n_tissue = 0
 
 
-"""
-n_SNP = 10000
-n_eQTL = 10
-index_eQTL = []
-power_eQTL = []
-
-n_TF = 50
-n_Tissue = 13
-n_TFSNP = 20  ## or randomly draw from a Gaussian?
-power_beforeTF = []
-power_afterTF = []
-"""
 
 
 
+##==== simulating variables
+## notes: TODO
+##	1. simulate variables observed and latent excluding those along the generation process
+##	2. xxx
+##=====================
+def simu_geno():	# variables and beta (cis-)
 
-SNP_list = []
+	return
+
+## simulate batch variables for all individuals, and for all samples in different individuals; then concatenate them when using them
+def simu_batch():	# variables and beta
+
+	return
+
+def simu_cell_beta():
+
+	return
+
+def simu_beta_cell_fac():
+
+	return
+
+def simu_beta_batch():
+
+	return
+
+
+
 
 
 
@@ -51,11 +108,6 @@ if __name__ == '__main__':
 
 	file.close()
 """
-
-
-
-
-
 
 
 
