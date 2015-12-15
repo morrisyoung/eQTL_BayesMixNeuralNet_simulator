@@ -3,13 +3,14 @@
 ## function: generate the coefficients according to the specified graphical model (the neural model in a Bayesian approach), and generate the corresponding expression level for ALL genes
 ## notes:
 ##	1. we should simulate tissue specificity, as the modeling takes consideration of that;
-##	2. when we say a factor, it's latent factor condensed from some original variables
+##	2. when we say a factor, it's latent factor condensed from some original variables;
 ##	3. xxx
 
 
 import numpy as np
 
 
+##=====================
 ##==== global variables
 ## notes: TODO
 ##	1. shall we simulate Spike and Slab?
@@ -56,37 +57,45 @@ beta_factor_batch_rep = {gene:[], ...}				# coefficient lists of batch factors f
 
 
 
-
+##=========================
 ##==== simulating variables
 ## notes: TODO
 ##	1. simulate variables observed and latent excluding those along the generation process
 ##	2. xxx
-##=====================
+##=========================
 def simu_genotype():	# variables
-	# to fill in: 
+	# to fill in:
 	##SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
 	##SNP_pos_list = []
 
-"""
-## function: randomly generate the genotypes (minor allele frequency) of n individuals for n_SNP independent sites, value in [0, 0.5, 1]
-n = 185
-n_SNP = 10000
+	global SNP_rep
+	global SNP_pos_list
+	global L
 
-	file = open("genotype.data", "w")
+	##==== SNP_rep (uniform randomly draw MAF from [0,1))
+	for individual in SNP_rep:
+		for i in range(len(SNP_rep[individual])):
+			# random draw from [0, 1)
+			dosage = np.random.random_sample()
+			SNP_rep[individual][i] = dosage
 
-
-	for i in range(n):
-
-		array = np.random.randint(3, size=n_SNP)
-		array = array * 0.5
-		for freq in array:
-			file.write(str(freq) + ' ')
-		file.write('\n')
-
-	file.close()
-"""
-
+	##==== SNP_pos_list (uniform randomly draw POS from [0,1) * L)
+	temp_rep = {}
+	temp_list = []
+	for i in range(len(SNP_pos_list)):
+		while 1:
+			pos = int(np.random.random_sample() * L)
+			if pos in temp_rep:
+				continue
+			else:
+				temp_rep[pos] = 1
+				temp_list.append(pos)
+				break
+	temp_list = np.array(temp_list)
+	temp_list = np.sort(temp_list)
+	SNP_pos_list = temp_list
 	return
+
 
 def simu_genotype_beta():	# beta (cis-); one more coefficient as the constant item in linear regression
 	# to fill in:
@@ -137,7 +146,7 @@ def simu_batch_factor():	# variables and beta
 
 
 
-
+##=====================
 ##==== other utilities
 ## notes: TODO
 ##	1. xxx
@@ -145,6 +154,8 @@ def simu_batch_factor():	# variables and beta
 def SNP_gene_map():
 	# to fill in:
 	##pos_map = {}							# {gene:[snp1, snp2], ...}
+
+
 
 
 
