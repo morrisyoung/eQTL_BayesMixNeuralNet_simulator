@@ -159,9 +159,6 @@ def simu_batch_factor():	# variables and beta
 
 
 
-
-
-
 ##=====================
 ##==== other utilities
 ## notes: TODO
@@ -171,6 +168,30 @@ def SNP_gene_map():
 	# to fill in:
 	##pos_map = {}							# {gene:[snp1, snp2], ...}
 
+	global pos_map
+	global SNP_pos_list
+	global gene_pos_list
+
+	##==== pos_map
+	for i in range(len(gene_pos_list)):
+		index_gene = 0
+		index_start = 0
+		index_end = 0
+		
+		pos_gene = gene_pos_list[i]
+		index = 0
+		while (SNP_pos_list[index] - pos_gene) < -1000000:
+			index += 1
+		index_start = index
+		index += 1
+		while (SNP_pos_list[index] - pos_gene < 1000000):
+			index += 1
+			if index == len(SNP_pos_list):
+				break
+		index -= 1
+		index_end = index
+		pos_map[index_gene] = [index_start, index_end]
+	return
 
 
 
