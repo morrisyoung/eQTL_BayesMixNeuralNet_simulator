@@ -4,7 +4,8 @@
 ## notes:
 ##	1. we should simulate tissue specificity, as the modeling takes consideration of that;
 ##	2. when we say a factor, it's latent factor condensed from some original variables;
-##	3. xxx
+##	3. TODO: in next stage of simulation, we can use the true genotype with fake beta to generate the expression profile, as the genotype distribution (MAF) may not be exactly what we assume here;
+##	4. xxx
 
 
 import numpy as np
@@ -97,6 +98,30 @@ def simu_genotype():	# variables
 	return
 
 
+def simu_gene():
+	# to fill in:
+	##gene_pos_list = []
+
+	global gene_pos_list
+
+	##==== gene_pos_list
+	temp_rep = {}
+	temp_list = []
+	for i in range(len(gene_pos_list)):
+		while 1:
+			pos = int(np.random.random_sample() * L)
+			if pos in temp_rep:
+				continue
+			else:
+				temp_rep[pos] = 1
+				temp_list.append(pos)
+				break
+	temp_list = np.array(temp_list)
+	temp_list = np.sort(temp_list)
+	gene_pos_list = temp_list
+	return
+
+
 def simu_genotype_beta():	# beta (cis-); one more coefficient as the constant item in linear regression
 	# to fill in:
 	##SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
@@ -105,15 +130,6 @@ def simu_genotype_beta():	# beta (cis-); one more coefficient as the constant it
 
 
 	return
-
-
-def simu_gene():
-	# to fill in:
-	##gene_pos_list = []
-
-
-	return
-
 
 
 def simu_cell_factor():
