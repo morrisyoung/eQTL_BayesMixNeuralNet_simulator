@@ -10,6 +10,7 @@
 import numpy as np
 
 
+
 ##==== global variables
 ## notes: TODO
 ##	1. shall we simulate Spike and Slab?
@@ -18,37 +19,38 @@ import numpy as np
 #==== individual
 n_individual = 0
 
+#==== tissue
+n_tissue = 0
+
 #==== SNP
 n_SNP = 0
 SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
 SNP_pos_list = []
-SNP_beta_rep = {tissue:{gene:[], xxx:[], ...}, xxx:{}, ...}	# cis- SNP beta lists for different genes in tissuess
+SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 
 #==== gene
 n_gene = 0
-gene_list = []
+gene_rep = {individual:{tissue:[], ...}, ...}			# gene expression list for tissue samples for individuals
 gene_pos_list = []
 
 #==== SNP gene pos map
-pos_map = {}							# {0:[n_1, n_2], 1:[n_1,n_2], ...}
+pos_map = {}							# {gene:[snp1, snp2], ...}
 
 #==== factor_cell
 n_factor_cell = 0
-factor_cell_beta_rep = {cell factor:[], xxx:[], ...}		# coefficient lists for cell factors
-beta_factor_cell_rep = {tissue:{gene:[], xxx:[], ...}, ...}	# coefficient lists of cell factors for genes in tissues
+factor_cell_beta_rep = {cell factor:[], ...}			# coefficient lists for cell factors
+beta_factor_cell_rep = {tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
 
 #==== factor_batch (analogous to cell factor pathway)
 n_factor_batch = 0						# n_factor_batch = n_factor_batch_individual + n_factor_batch_sample
 n_factor_batch_individual = 0
 n_factor_batch_sample = 0
-factor_batch_beta_rep = {batch factor:[], xxx:[], ...}		# coefficient lists for batch factors
-
-#==== batch variables (will be concatenated from following individual factors and tissue sample factors)
-batch_individual_rep = {0:[], 1:[], ...}			# batch variable lists for individuals
+batch_individual_rep = {individual:[], ...}			# batch variable lists for individuals
 batch_tissue_sample_rep = {individual:{tissue:[], ...}, ...}	# batch variable lists for tissue samples in individuals
+factor_batch_beta_rep = {batch factor:[], ...}			# coefficient lists for batch factors
+beta_factor_batch_rep = {tissue:[], ...}			# coefficient lists of batch factors for genes
 
-#==== tissue
-n_tissue = 0
+
 
 
 
@@ -61,7 +63,26 @@ n_tissue = 0
 ##=====================
 def simu_geno():	# variables and beta (cis-)
 
+"""
+## function: randomly generate the genotypes (minor allele frequency) of n individuals for n_SNP independent sites, value in [0, 0.5, 1]
+n = 185
+n_SNP = 10000
+
+	file = open("genotype.data", "w")
+
+
+	for i in range(n):
+
+		array = np.random.randint(3, size=n_SNP)
+		array = array * 0.5
+		for freq in array:
+			file.write(str(freq) + ' ')
+		file.write('\n')
+
+	file.close()
+"""
 	return
+
 
 ## simulate batch variables for all individuals, and for all samples in different individuals; then concatenate them when using them
 def simu_batch():	# variables and beta
@@ -87,35 +108,12 @@ def simu_beta_batch():
 
 
 
-"""
-## function: randomly generate the genotypes (minor allele frequency) of n individuals for n_SNP independent sites, value in [0, 0.5, 1]
-n = 185
-n_SNP = 10000
-
-
-if __name__ == '__main__':
-
-	file = open("genotype.data", "w")
-
-
-	for i in range(n):
-
-		array = np.random.randint(3, size=n_SNP)
-		array = array * 0.5
-		for freq in array:
-			file.write(str(freq) + ' ')
-		file.write('\n')
-
-	file.close()
-"""
 
 
 
 
 
 if __name__ == '__main__':
-
-
 
 
 
