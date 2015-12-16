@@ -30,11 +30,11 @@ n_tissue = 0
 n_SNP = 0
 SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
 SNP_pos_list = []
-SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
+SNP_beta_rep = {} #{tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 
 #==== gene
 n_gene = 0
-gene_rep = {individual:{tissue:[], ...}, ...}			# gene expression list for tissue samples for individuals
+gene_rep = {} #{individual:{tissue:[], ...}, ...}		# gene expression list for tissue samples for individuals
 gene_pos_list = []
 
 #==== SNP gene pos map
@@ -42,18 +42,18 @@ pos_map = {}							# {gene:[snp1, snp2], ...}
 
 #==== factor_cell
 n_factor_cell = 0
-factor_cell_beta_rep = {cell factor:[], ...}			# coefficient lists for cell factors
-beta_factor_cell_rep = {tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
+factor_cell_beta_rep = {} #{cell factor:[], ...}		# coefficient lists for cell factors
+beta_factor_cell_rep = {} #{tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
 
 #==== factor_batch (analogous to cell factor pathway)
 n_batch = 0							# n_batch = n_batch_individual + n_batch_sample
 n_batch_individual = 0
 n_batch_sample = 0
-#n_factor_batch							# the number of latent batch factors
-batch_individual_rep = {individual:[], ...}			# batch variable lists for individuals
-batch_tissue_sample_rep = {individual:{tissue:[], ...}, ...}	# batch variable lists for tissue samples in individuals
-factor_batch_beta_rep = {batch factor:[], ...}			# coefficient lists for batch factors
-beta_factor_batch_rep = {gene:[], ...}				# coefficient lists of batch factors for genes
+n_factor_batch = 0						# the number of latent batch factors
+batch_individual_rep = {} #{individual:[], ...}			# batch variable lists for individuals
+batch_tissue_sample_rep = {} #{individual:{tissue:[], ...}, ...}	# batch variable lists for tissue samples in individuals
+factor_batch_beta_rep = {} #{batch factor:[], ...}		# coefficient lists for batch factors
+beta_factor_batch_rep = {} #{gene:[], ...}			# coefficient lists of batch factors for genes
 
 
 
