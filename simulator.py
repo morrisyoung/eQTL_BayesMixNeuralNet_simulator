@@ -470,14 +470,18 @@ if __name__ == '__main__':
 
 
 
-
-
-
-
 	##=======================================================
 	##==== generate the expression profile through the model
 	##=======================================================
 	##gene_rep = {individual:{tissue:[], ...}, ...}			# gene expression list for tissue samples for individuals
+
+
+
+
+
+	
+
+
 
 
 
@@ -500,53 +504,6 @@ if __name__ == '__main__':
 
 
 
-
-
-	"""
-	###==============###
-	## generate the positions of associated SNPs with the current gene, fill in index_eQTL
-	index_eQTL = np.sort( np.random.permutation(n_SNP)[0: n_eQTL] )  ## sorted index
-	power_eQTL = 0.5 * np.random.random_sample((n_eQTL,)) + 0.5
-
-
-
-	###==============###
-	## generate the TF (cell state function) part --> tissue specificity and consistency
-	for i in range(n_Tissue):
-		array = np.zeros((n_TF, n_SNP))
-		power_TF.append(array)
-	for i in range(n_TF):
-		## generate the index of associated SNPs, and generate their powers, and sign in matrix across different tissues
-		index = np.sort( np.random.permutation(n_SNP)[0: n_TFSNP] )  ## sorted index
-		power = 0.5 * np.random.random_sample((n_TFSNP, )) + 0.5
-
-		permutation = np.random.permutation(n_Tissue)
-
-		# keep (n_Tissue - 3) amount of tissues as consistent part
-		for j in range(n_Tissue - 3):
-			tissue = permutation[j]
-			## assign all the power of SNPs into this tissue
-			for k in range(len(index)):
-				power_TF[tissue][index[k]] = power[k]
-
-		# make (3) tissues show tissue specificity; keep the index as the same, but generate the new power
-		for j in range(3):
-			power = 0.5 * np.random.random_sample((n_TFSNP, )) + 0.5
-			tissue = permutation[n_Tissue - 3 + j]
-			## assign all the power of SNPs into this tissue
-			for k in range(len(index)):
-				power_TF[tissue][index[k]] = power[k]
-
-
-	## generate the TF (cell state function) part --> the power of TF
-	power_afterTF = 0.5 * np.random.random_sample((n_TF, )) + 0.5
-
-
-
-
-	###==============###
-	## generate the population part
-	"""
 
 
 
