@@ -231,6 +231,64 @@ def simu_batch_factor():	# variables and beta
 	##factor_batch_beta_rep = {batch factor:[], ...}			# coefficient lists for batch factors
 	##beta_factor_batch_rep = {gene:[], ...}
 
+	global n_batch
+	global n_batch_individual
+	global n_batch_sample
+	global n_factor_batch
+	global batch_individual_rep
+	global batch_tissue_sample_rep
+	global factor_batch_beta_rep
+	global beta_factor_batch_rep
+
+
+	##==== batch_individual_rep
+	for i in batch_individual_rep:
+		for j in range(len(batch_individual_rep[i])):
+			value = np.random.random_sample()
+			batch_individual_rep[i][j] = value
+
+	##==== batch_tissue_sample_rep
+	for i in batch_tissue_sample_rep:
+		for j in batch_tissue_sample_rep[i]:
+			for k in range(len(batch_tissue_sample_rep[i][j])):	
+				value = np.random.random_sample()
+				batch_tissue_sample_rep[i][j][k] = value
+
+
+	pi = 0.5	# for Binomial
+	lamb = 0	# for Gaussian
+	std = 1		# for Gaussian
+
+	##==== factor_batch_beta_rep
+	for i in factor_batch_beta_rep:
+		for j in range(n_batch):
+			## Spike and Slab prior: first binomial; then 0 or Gaussian
+			# Binomial
+			flag = np.random.binomial(1, pi)
+			if flag == 1:
+				# Gaussian
+				beta = np.random.normal(lamb, std)
+				factor_batch_beta_rep[i][j] = beta
+			else:
+				continue
+		beta = np.random.normal(lamb, std)
+		factor_batch_beta_rep[i][-1] = beta
+
+
+	##==== beta_factor_batch_rep
+	for i in beta_factor_batch_rep:
+		for j in range(n_factor_batch):
+			## Spike and Slab prior: first binomial; then 0 or Gaussian
+			# Binomial
+			flag = np.random.binomial(1, pi)
+			if flag == 1:
+				# Gaussian
+				beta = np.random.normal(lamb, std)
+				beta_factor_batch_rep[i][j] = beta
+			else:
+				continue
+		beta = np.random.normal(lamb, std)
+		beta_factor_batch_rep[i][-1] = beta
 
 	return
 
@@ -303,7 +361,7 @@ if __name__ == '__main__':
 	n_batch = 229
 	n_batch_individual = 160		# as in GTEx.v.4
 	n_batch_sample = 69			# as in GTEx.v.4
-	n_factor_batch = 400			# as evaluated empirically, the same with cell factors
+	n_factor_batch = 50			# as evaluated empirically
 
 
 
