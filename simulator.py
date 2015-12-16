@@ -125,10 +125,44 @@ def simu_gene():
 def simu_genotype_beta():	# beta (cis-); one more coefficient as the constant item in linear regression
 	# to fill in:
 	##SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
-	# later on, after "SNP gene pos map"
 
+	## notes:
+	##	1. an extra item as the constant item, and it's not from Spike and Slab but directly from the Gaussian
+	##	2. select some to be non-zero, and all others are zero
+	##	3. nonzero coefficient has zero-mean Gaussian distribution
+	##	4. here we don't keep the tissue consistency for these cis- elements, but rather we make them more general; maybe later we can introduce tissue consistency
+	##	5. all the parameters in the prior can be changed later on
 
+	global SNP_beta_rep
+	global pos_map
+	global n_tissue
+	global n_gene
+	pi = 0.5	# for Binomial
+	lamb = 0	# for Gaussian
+	std = 1		# for Gaussian
 
+	##==== SNP_beta_rep
+	for i in range(n_tissue):
+		SNP_beta_rep[i] = {}
+		for j in range(n_gene):
+			SNP_beta_rep[i][j] = []
+			amount = pos_map[j][1] - pos_map[j][0] + 1
+			for k in range(amount):
+				SNP_beta_rep[i][j].append(0)
+
+			for k in range(len(SNP_beta_rep[i][j])):
+				## Spike and Slab prior: first binomial; then 0 or Gaussian			
+				# Binomial
+				flag = np.random.binomial(1, pi)
+				if flag == 1:
+					# Gaussian
+					beta = np.random.normal(lamb, std)
+					SNP_beta_rep[i][j][k] = beta
+				else:
+					continue
+
+			beta = np.random.normal(lamb, std)
+			SNP_beta_rep[i][j].append(beta)
 	return
 
 
