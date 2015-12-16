@@ -126,12 +126,11 @@ def simu_genotype_beta():	# beta (cis-); one more coefficient as the constant it
 	# to fill in:
 	##SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 
-	## notes:
+	## notes (TODO):
 	##	1. an extra item as the constant item, and it's not from Spike and Slab but directly from the Gaussian
-	##	2. select some to be non-zero, and all others are zero
-	##	3. nonzero coefficient has zero-mean Gaussian distribution
-	##	4. here we don't keep the tissue consistency for these cis- elements, but rather we make them more general; maybe later we can introduce tissue consistency
-	##	5. all the parameters in the prior can be changed later on
+	##	2. select some to be non-zero, and all others are zero, with Spike and Slab prior
+	##	3. here we don't keep the tissue consistency for these cis- elements, but rather we make them more general; maybe later we can introduce tissue consistency
+	##	4. all the parameters in the prior can be changed later on
 
 	global SNP_beta_rep
 	global pos_map
@@ -171,7 +170,55 @@ def simu_cell_factor():
 	##factor_cell_beta_rep = {cell factor:[], ...}			# coefficient lists for cell factors
 	##beta_factor_cell_rep = {tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
 
+	## notes (TODO):
+	##	1. an extra item as the constant item, and it's not from Spike and Slab but directly from the Gaussian
+	##	2. select some to be non-zero, and all others are zero, with Spike and Slab prior
+	##	3. here we don't keep the tissue consistency for these cis- elements, but rather we make them more general; maybe later we can introduce tissue consistency
+	##	4. all the parameters in the prior can be changed later on
+	##	5. we set a smaller Slab component, as there are huge amout of trans- SNPs
 
+	global factor_cell_beta_rep
+	global n_SNP
+	global beta_factor_cell_rep
+	global n_factor_cell
+	pi = 0.1	# for Binomial
+	lamb = 0	# for Gaussian
+	std = 1		# for Gaussian
+
+	##==== factor_cell_beta_rep
+	for i in factor_cell_beta_rep:
+		for j in range(n_SNP):
+			## Spike and Slab prior: first binomial; then 0 or Gaussian
+			# Binomial
+			flag = np.random.binomial(1, pi)
+			if flag == 1:
+				# Gaussian
+				beta = np.random.normal(lamb, std)
+				factor_cell_beta_rep[i][j] = beta
+			else:
+				continue
+		beta = np.random.normal(lamb, std)
+		factor_cell_beta_rep[i][-1] = beta
+
+	pi = 0.5	# for Binomial
+	lamb = 0	# for Gaussian
+	std = 1		# for Gaussian
+
+	##==== beta_factor_cell_rep
+	for i in beta_factor_cell_rep:
+		for j in beta_factor_cell_rep[i]:
+			for k in range(n_factor_cell):
+				## Spike and Slab prior: first binomial; then 0 or Gaussian
+				# Binomial
+				flag = np.random.binomial(1, pi)
+				if flag == 1:
+					# Gaussian
+					beta = np.random.normal(lamb, std)
+					beta_factor_cell_rep[i][j][k] = beta
+				else:
+					continue
+			beta = np.random.normal(lamb, std)
+			beta_factor_cell_rep[i][j][-1] = beta
 	return
 
 
