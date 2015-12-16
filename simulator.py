@@ -482,6 +482,33 @@ if __name__ == '__main__':
 			for k in range(n_gene):
 				gene_rep[i][j].append(0)
 
+	# three pathway: 1. cis- regulation; 2. trans- regulation; 3. batch effect
+	for i in range(n_individual):		#
+		for j in range(n_tissue):	#
+			for k in range(n_gene):	#
+				y = 0
+				#==== 1. cis- regulation
+				index_start = pos_map[k][0]
+				index_end = pos_map[k][1]
+				for m in range(index_start, index_end+1):
+					dosage = SNP_rep[i][m]
+					beta = SNP_beta_rep[j][k][m]
+					y += dosage * beta
+				y += SNP_beta_rep[j][k][-1]	# intercept
+
+				#==== 2. trans- regulation
+
+
+
+				#==== 3. batch effect
+
+				
+
+				noise = np.random.normal()
+				y += noise
+				gene_rep[i][j][k] = y
+
+
 
 
 	"""
@@ -492,7 +519,6 @@ if __name__ == '__main__':
 	#==== SNP
 	n_SNP = 0
 	SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
-	SNP_pos_list = []
 	SNP_beta_rep = {} #{tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 	#==== gene
 	n_gene = 0
@@ -516,31 +542,6 @@ if __name__ == '__main__':
 	"""
 
 
-
-	### three pathway: 1. cis- regulation; 2. trans- regulation; 3. batch effect
-	#==== 1. cis- regulation
-
-
-
-
-
-
-
-
-
-	#==== 2. trans- regulation
-
-
-
-
-
-
-
-
-
-
-
-	#==== 3. batch effect
 
 
 
