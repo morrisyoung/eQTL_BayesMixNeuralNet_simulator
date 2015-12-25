@@ -30,7 +30,8 @@ def simu_genotype(SNP_rep, SNP_pos_list, L):
 				break
 	temp_list = np.array(temp_list)
 	temp_list = np.sort(temp_list)
-	SNP_pos_list = temp_list
+	for i in range(len(SNP_pos_list)):
+		SNP_pos_list[i] = temp_list[i]
 
 	return
 
@@ -54,7 +55,8 @@ def simu_gene_pos(gene_pos_list):
 				break
 	temp_list = np.array(temp_list)
 	temp_list = np.sort(temp_list)
-	gene_pos_list = temp_list
+	for i in range(len(gene_pos_list)):
+		gene_pos_list[i] = temp_list[i]
 
 	return
 
