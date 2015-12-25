@@ -5,7 +5,9 @@
 ##	1. we should simulate tissue specificity, as the modeling takes consideration of that;
 ##	2. when we say a factor, it's latent factor condensed from some original variables;
 ##	3. TODO: in next stage of simulation, we can use the true genotype with fake beta to generate the expression profile, as the genotype distribution (MAF) may not be exactly what we assume here;
-##	4. xxx
+##	4. we should simulate the tissue hierarchy, as we need to integrate that into the framework (learning)
+##	5. xxx
+
 
 
 
