@@ -2,11 +2,10 @@
 ## Output: expression level for some genes
 ## function: generate the coefficients according to the specified graphical model (the neural model in a Bayesian approach), and generate the corresponding expression level for ALL genes
 ## notes:
-##	1. we should simulate tissue specificity, as the modeling takes consideration of that;
+##	1. we should simulate tissue specificity and consistency (tissue hierarchy), as the modeling takes consideration of that;
 ##	2. when we say a factor, it's latent factor condensed from some original variables;
 ##	3. TODO: in next stage of simulation, we can use the true genotype with fake beta to generate the expression profile, as the genotype distribution (MAF) may not be exactly what we assume here;
-##	4. we should simulate the tissue hierarchy, as we need to integrate that into the framework (learning)
-##	5. xxx
+##	4. we have all the coefficients one more item, which is the intercept of the regression: cis-SNP, SNP-cell factor, cell factor-gene, batch-batch factor, batch factor-gene
 
 
 
@@ -17,6 +16,7 @@
 import numpy as np
 from utility import *
 from simu_sub import *
+from scipy.special import expit					# for logistic function
 
 
 
@@ -65,6 +65,12 @@ beta_factor_batch_rep = {} #{gene:[], ...}			# coefficient lists of batch factor
 
 
 
+# DEBUG
+#==== the gene expression signal from three pathways (cis, cell factor, batch effect)
+gene_rep_cis = {}
+gene_rep_cell = {}
+gene_rep_batch = {}
+
 
 
 
@@ -77,6 +83,7 @@ if __name__ == '__main__':
 	##===========================
 	##==== initialize dimensions
 	##===========================
+	# TODO: parameters tunable
 	#==== chromosome
 	L = 100000000				# 100MB
 	#==== individual
@@ -98,9 +105,14 @@ if __name__ == '__main__':
 
 
 
+
 	##=============================================================
 	##==== simulate variables (initialize space first if possible)
 	##=============================================================
+
+	# DEBUG
+	print "now simulating genotype of individuals and their positions..."
+
 	#==== SNP
 	#n_SNP = 100000				# 100K, so SNP density is 1/1,000bp
 	##SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
@@ -116,6 +128,9 @@ if __name__ == '__main__':
 	simu_genotype(SNP_rep, SNP_pos_list, L)
 
 
+	# DEBUG
+	print "now simulating gene positions..."
+
 	#==== gene
 	#n_gene = 2000				# 2K, so gene density is 1/50,000bp
 	##gene_rep = {individual:{tissue:[], ...}, ...}			# gene expression list for tissue samples for individuals
@@ -128,15 +143,22 @@ if __name__ == '__main__':
 	##gene_pos_list = []
 	for i in range(n_gene):
 		gene_pos_list.append(0)
-	simu_gene_pos(gene_pos_list)
+	simu_gene_pos(gene_pos_list, L)
 
+
+	# DEBUG
+	print "now mapping the genes with SNPs, and simulating genotype beta..."
 
 	#==== SNP gene pos map
 	#pos_map = {}							# {gene:[snp1, snp2], ...}
+	pos_map = {}
 	SNP_gene_map(SNP_pos_list, gene_pos_list, pos_map)
 	##SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 	simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep)
 
+
+	# DEBUG
+	print "now simulating beta for SNP-cell factor pathway, and for cell factor-gene pathway..."
 
 	#==== factor_cell
 	#n_factor_cell = 400			# as evaluated empirically
@@ -157,6 +179,9 @@ if __name__ == '__main__':
 			beta_factor_cell_rep[i][j].append(0)		# the constant item
 	simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor_cell)
 
+
+	# DEBUG
+	print "now simulating batch variables and the beta of two pathways..."
 
 	#==== factor_batch (analogous to cell factor pathway)
 	#n_batch = 229
@@ -181,17 +206,20 @@ if __name__ == '__main__':
 		factor_batch_beta_rep[i] = []
 		for j in range(n_batch):
 			factor_batch_beta_rep[i].append(0)
-		factor_batch_beta_rep[i].append(0)
+		factor_batch_beta_rep[i].append(0)			# the constant item
 	##beta_factor_batch_rep = {gene:[], ...}
 	for i in range(n_gene):
 		beta_factor_batch_rep[i] = []
 		for j in range(n_factor_batch):
 			beta_factor_batch_rep[i].append(0)
-		beta_factor_batch_rep[i].append(0)
+		beta_factor_batch_rep[i].append(0)			# the constant item
 	simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batch, batch_individual_rep, batch_tissue_sample_rep, factor_batch_beta_rep, beta_factor_batch_rep)
 
 
 
+
+	# DEBUG
+	print "now generating the expression level..."
 
 
 	##=======================================================
@@ -204,6 +232,27 @@ if __name__ == '__main__':
 			gene_rep[i][j] = []
 			for k in range(n_gene):
 				gene_rep[i][j].append(0)
+
+	# DEBUG
+	for i in range(n_individual):
+		gene_rep_cis[i] = {}
+		for j in range(n_tissue):
+			gene_rep_cis[i][j] = []
+			for k in range(n_gene):
+				gene_rep_cis[i][j].append(0)
+	for i in range(n_individual):
+		gene_rep_cell[i] = {}
+		for j in range(n_tissue):
+			gene_rep_cell[i][j] = []
+			for k in range(n_gene):
+				gene_rep_cell[i][j].append(0)
+	for i in range(n_individual):
+		gene_rep_batch[i] = {}
+		for j in range(n_tissue):
+			gene_rep_batch[i][j] = []
+			for k in range(n_gene):
+				gene_rep_batch[i][j].append(0)
+
 
 	##var_cell_hidden_factor = []					# n_factor_cell cell hidden factors to be filled in
 	for i in range(n_factor_cell):
@@ -221,7 +270,8 @@ if __name__ == '__main__':
 			for count1 in range(n_SNP):
 				value += SNP_rep[i][count1] * factor_cell_beta_rep[count][count1]
 			value += 1 * factor_cell_beta_rep[count][-1]
-			var_cell_hidden_factor[count] = value
+			#var_cell_hidden_factor[count] = value			# TODO: logistic twist; below
+			var_cell_hidden_factor[count] = expit(value)
 
 		for j in range(n_tissue):
 			# get the batch hidden factors for this individual in this tissue
@@ -235,32 +285,47 @@ if __name__ == '__main__':
 				for count1 in range(n_batch):
 					value += batch_list[count1] * factor_batch_beta_rep[count][count1]
 				value += 1 * factor_batch_beta_rep[count][-1]
-				var_batch_hidden_factor[count] = value
+				#var_batch_hidden_factor[count] = value		# TODO: logistic twist; below
+				var_batch_hidden_factor[count] = expit(value)
 
 			for k in range(n_gene):
+
+				# DEBUG
+				# I will separately save the signal from the three pathway, to compare their intensity
+				# the combined signal with noise added will be saved as usual
+
 				y = 0
 				#==== 1. cis- regulation
+				y1 = 0
 				index_start = pos_map[k][0]
 				index_end = pos_map[k][1]
 				for m in range(index_start, index_end + 1):
 					dosage = SNP_rep[i][m]
 					beta = SNP_beta_rep[j][k][m - index_start]
-					y += dosage * beta
-				y += 1 * SNP_beta_rep[j][k][-1]			# intercept
+					y1 += dosage * beta
+				y1 += 1 * SNP_beta_rep[j][k][-1]		# intercept
+				gene_rep_cis[i][j][k] = y1
+				y += y1
 
 				#==== 2. cell factor regulation
+				y2 = 0
 				for count in range(n_factor_cell):
 					factor = var_cell_hidden_factor[count]
 					beta = beta_factor_cell_rep[j][k][count]
-					y += factor * beta
-				y += 1 * beta_factor_cell_rep[j][k][-1]		# intercept
+					y2 += factor * beta
+				y2 += 1 * beta_factor_cell_rep[j][k][-1]	# intercept
+				gene_rep_cell[i][j][k] = y2
+				y += y2
 
 				#==== 3. batch effect
+				y3 = 0
 				for count in range(n_factor_batch):
 					factor = var_batch_hidden_factor[count]
 					beta = beta_factor_batch_rep[k][count]
-					y += factor * beta
-				y += 1 * beta_factor_batch_rep[k][-1]		# intercept
+					y3 += factor * beta
+				y3 += 1 * beta_factor_batch_rep[k][-1]		# intercept
+				gene_rep_batch[i][j][k] = y3
+				y += y3
 
 				#==== 4. plus a small noise
 				# Gaussian noise
@@ -272,6 +337,10 @@ if __name__ == '__main__':
 
 
 
+
+
+	# DEBUG
+	print "now saving all the simulated data..."
 
 
 	##======================
@@ -337,8 +406,14 @@ if __name__ == '__main__':
 		file_gene = 				open("../simulation_data/gene/" + str(individual) + ".txt", 'w')
 		for tissue in gene_rep[individual]:
 			file_gene.write(str(tissue) + "\t")
-			for rpkm in gene_rep[individual][tissue]:
-				file_gene.write(str(rpkm) + "\t")
+
+			#for rpkm in gene_rep[individual][tissue]:
+			#	file_gene.write(str(rpkm) + "\t")
+			# DEBUG
+			for i in range(len(gene_rep[individual][tissue])):
+				s = str(gene_rep[individual][tissue][i]) + " " + str(gene_rep_cis[individual][tissue][i]) + " " + str(gene_rep_cell[individual][tissue][i]) + " " + str(gene_rep_batch[individual][tissue][i])
+				file_gene.write(s + "\t")
+
 			file_gene.write("\n")
 		file_gene.close()
 	file_meta.write("gene_pos_list\t")
@@ -406,7 +481,7 @@ if __name__ == '__main__':
 			file_batch_par_batch_batch_hidden.write(str(beta) + "\t")
 		file_batch_par_batch_batch_hidden.write("\n")
 	for gene in beta_factor_batch_rep:
-		file_batch_par_batch_hidden_gene.write(str(factor) + "\t")
+		file_batch_par_batch_hidden_gene.write(str(gene) + "\t")
 		for beta in beta_factor_batch_rep[gene]:
 			file_batch_par_batch_hidden_gene.write(str(beta) + "\t")
 		file_batch_par_batch_hidden_gene.write("\n")
@@ -424,4 +499,6 @@ if __name__ == '__main__':
 	#file_cell_par_cell_gene = 		open("../simulation_data/cell_par_cell_gene/xxx.txt", 'w')
 	#file_gene = 				open("../simulation_data/gene/xxx.txt", 'w')
 	file_gene_SNP_map.close()# =			open("../simulation_data/gene_SNP_map.txt", 'w')
+
+
 
