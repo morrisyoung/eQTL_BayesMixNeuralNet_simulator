@@ -9,15 +9,13 @@
 ## input: the pos of all SNPs; the pos of all genes
 ## output: the cis- region index (start, end) of SNPs for all genes
 def SNP_gene_map(SNP_pos_list, gene_pos_list, pos_map):
-	pos_map = {}
-
 
 	for i in range(len(gene_pos_list)):
-		index_gene = 0
+		index_gene = i
 		index_start = 0
 		index_end = 0
 
-		pos_gene = gene_pos_list[i]
+		pos_gene = gene_pos_list[index_gene]
 		index = 0
 		while (SNP_pos_list[index] - pos_gene) < -1000000:
 			index += 1

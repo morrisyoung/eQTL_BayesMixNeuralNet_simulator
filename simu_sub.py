@@ -1,6 +1,11 @@
 ## functions: simulate given parts in the models
+## notes:
+##	1. to add the hierarchical regulation (hierarchy code has been finished)
+##	2. xxx
+
 
 import numpy as np
+from hierarchy import *
 
 
 
@@ -40,7 +45,7 @@ def simu_genotype(SNP_rep, SNP_pos_list, L):
 
 ## target:
 ##	gene_pos_list
-def simu_gene_pos(gene_pos_list):
+def simu_gene_pos(gene_pos_list, L):
 	##==== gene_pos_list
 	temp_rep = {}
 	temp_list = []
@@ -64,7 +69,6 @@ def simu_gene_pos(gene_pos_list):
 
 
 
-
 ## target:
 ##	SNP_beta_rep = {tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
 ## notes:
@@ -74,10 +78,14 @@ def simu_gene_pos(gene_pos_list):
 ##	4. all the parameters in the prior can be changed later on
 def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 	# TODO: parameters tunable
+	##==============================================================================================================
 	pi = 0.5	# for Binomial
 	lamb = 0	# for Gaussian
 	std = 1		# for Gaussian
+	##==============================================================================================================
 
+
+	# TODO: add the hierarchical regulation
 	##==== SNP_beta_rep
 	for i in range(n_tissue):
 		SNP_beta_rep[i] = {}
@@ -98,6 +106,7 @@ def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 				else:
 					continue
 
+			# intercept
 			beta = np.random.normal(lamb, std)
 			SNP_beta_rep[i][j].append(beta)
 
@@ -119,9 +128,11 @@ def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 ##	5. we set a smaller Slab component, as there are handful trans- SNPs with respect to the total candidates
 def simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor_cell):
 	# TODO: parameters tunable
+	##==============================================================================================================
 	pi = 0.1	# for Binomial
 	lamb = 0	# for Gaussian
 	std = 1		# for Gaussian
+	##==============================================================================================================
 
 	##==== factor_cell_beta_rep
 	for i in factor_cell_beta_rep:
@@ -135,14 +146,20 @@ def simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor
 				factor_cell_beta_rep[i][j] = beta
 			else:
 				continue
+
+		# intercept
 		beta = np.random.normal(lamb, std)
 		factor_cell_beta_rep[i][-1] = beta
 
 	# TODO: parameters tunable
+	##==============================================================================================================
 	pi = 0.5	# for Binomial
 	lamb = 0	# for Gaussian
 	std = 1		# for Gaussian
+	##==============================================================================================================
 
+
+	# TODO: add the hierarchical regulation
 	##==== beta_factor_cell_rep
 	for i in beta_factor_cell_rep:
 		for j in beta_factor_cell_rep[i]:
@@ -156,6 +173,8 @@ def simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor
 					beta_factor_cell_rep[i][j][k] = beta
 				else:
 					continue
+
+			# intercept
 			beta = np.random.normal(lamb, std)
 			beta_factor_cell_rep[i][j][-1] = beta
 
@@ -189,9 +208,11 @@ def simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batc
 				batch_tissue_sample_rep[i][j][k] = value
 
 	# TODO: parameters tunable
+	##==============================================================================================================
 	pi = 0.5	# for Binomial
 	lamb = 0	# for Gaussian
 	std = 1		# for Gaussian
+	##==============================================================================================================
 
 	##==== factor_batch_beta_rep
 	for i in factor_batch_beta_rep:
@@ -205,6 +226,8 @@ def simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batc
 				factor_batch_beta_rep[i][j] = beta
 			else:
 				continue
+
+		# intercept
 		beta = np.random.normal(lamb, std)
 		factor_batch_beta_rep[i][-1] = beta
 
@@ -221,11 +244,12 @@ def simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batc
 				beta_factor_batch_rep[i][j] = beta
 			else:
 				continue
+
+		# intercept
 		beta = np.random.normal(lamb, std)
 		beta_factor_batch_rep[i][-1] = beta
 
 	return
-
 
 
 
