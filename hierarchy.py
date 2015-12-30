@@ -118,7 +118,9 @@ def HierarchyCal(length):
 	#==== get out all the leaves, drop in "leaves", and return it
 	for node in hierarchy:
 		if hierarchy[node][2]:
-			leaves[node] = hierarchy[node][0]
+			# index = f(node)		# TODO: get the actual index of this tissue; now use identical function: index = node
+			index = node
+			leaves[index] = hierarchy[node][0]
 
 	return leaves
 

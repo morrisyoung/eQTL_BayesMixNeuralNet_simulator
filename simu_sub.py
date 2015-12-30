@@ -84,9 +84,7 @@ def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 	std = 1		# for Gaussian
 	##==============================================================================================================
 
-
-	# TODO: add the hierarchical regulation
-	##==== SNP_beta_rep
+	##==== SNP_beta_rep (Spike and Slab prior)
 	for i in range(n_tissue):
 		SNP_beta_rep[i] = {}
 		for j in range(n_gene):
@@ -96,7 +94,7 @@ def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 				SNP_beta_rep[i][j].append(0)
 
 			for k in range(len(SNP_beta_rep[i][j])):
-				## Spike and Slab prior: first binomial; then 0 or Gaussian			
+				## Spike and Slab prior: first binomial; then 0 or Gaussian
 				# Binomial
 				flag = np.random.binomial(1, pi)
 				if flag == 1:
@@ -109,6 +107,22 @@ def simu_genotype_beta(pos_map, n_tissue, n_gene, SNP_beta_rep):
 			# intercept
 			beta = np.random.normal(lamb, std)
 			SNP_beta_rep[i][j].append(beta)
+
+	# TODO: add the hierarchical regulation -> change to the following
+	"""
+	HierarchyInit()
+	##==== SNP_beta_rep (tissue hierarchy prior)
+	for i in range(n_tissue):
+		SNP_beta_rep[i] = {}
+		for j in range(n_gene):
+			SNP_beta_rep[i][j] = []
+
+	for i in range(n_gene):
+		length = pos_map[i][1] - pos_map[i][0] + 1 + 1	# an extra term is used as intercept
+		leaves = HierarchyCal(length)
+		for j in range(n_tissue):
+			SNP_beta_rep[j][i] = leaves[j]
+	"""
 
 	return
 
@@ -159,8 +173,7 @@ def simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor
 	##==============================================================================================================
 
 
-	# TODO: add the hierarchical regulation
-	##==== beta_factor_cell_rep
+	##==== beta_factor_cell_rep (Spike and Slab prior)
 	for i in beta_factor_cell_rep:
 		for j in beta_factor_cell_rep[i]:
 			for k in range(n_factor_cell):
@@ -177,6 +190,17 @@ def simu_cell_factor(factor_cell_beta_rep, n_SNP, beta_factor_cell_rep, n_factor
 			# intercept
 			beta = np.random.normal(lamb, std)
 			beta_factor_cell_rep[i][j][-1] = beta
+
+	# TODO: add the hierarchical regulation -> change to the following
+	"""
+	HierarchyInit()
+	##==== beta_factor_cell_rep (tissue hierarchy prior)
+	for i in range(n_gene):
+		length = n_factor_cell + 1			# the extra term as the intercept of the regression
+		leaves = HierarchyCal(length)
+		for j in range(n_tissue):
+			beta_factor_cell_rep[j][i] = leaves[j]
+	"""
 
 	return
 
@@ -250,6 +274,5 @@ def simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batc
 		beta_factor_batch_rep[i][-1] = beta
 
 	return
-
 
 
