@@ -6,6 +6,9 @@
 ##	2. when we say a factor, it's latent factor condensed from some original variables;
 ##	3. TODO: in next stage of simulation, we can use the true genotype with fake beta to generate the expression profile, as the genotype distribution (MAF) may not be exactly what we assume here;
 ##	4. we have all the coefficients one more item, which is the intercept of the regression: cis-SNP, SNP-cell factor, cell factor-gene, batch-batch factor, batch factor-gene
+##	5. we might always simulate in the single chromosome mode
+##	6. the indices of individuals/genes/tissues are coded in numbers from 0
+##	7. ...
 
 
 
@@ -342,13 +345,19 @@ if __name__ == '__main__':
 
 
 
+
+
+
+
 	# DEBUG
 	print "now saving all the simulated data..."
 
+	# NOTE: I will save two copies of the simulated data, one is in previous format, and another is in the format training program needs
 
-	##======================
-	##==== parameter saving
-	##======================
+	"""
+	##=================================================
+	##==== parameter saving (copy#1, the nature format)
+	##=================================================
 	# --> organized by tissue types (or individuals, for gene)
 	file_meta =				open("../simulation_data/meta.txt", 'w')
 	file_SNP_var =				open("../simulation_data/SNP_var.txt", 'w')
@@ -502,6 +511,205 @@ if __name__ == '__main__':
 	#file_cell_par_cell_gene = 		open("../simulation_data/cell_par_cell_gene/xxx.txt", 'w')
 	#file_gene = 				open("../simulation_data/gene/xxx.txt", 'w')
 	file_gene_SNP_map.close()# =			open("../simulation_data/gene_SNP_map.txt", 'w')
+	"""
+
+
+
+
+	##=================================================================
+	##==== parameter saving (copy#2, the format training program needs)
+	##=================================================================
+	# --> organized by tissue types (or individuals, for gene)
+	file_list_individuals =			open("../simulation_data_reformat/list_individuals.txt", 'w')
+	#file_SNP_var =				open("../simulation_data_reformat/genotype/chr1/SNP_dosage_IndividualID.txt", 'w')
+	file_SNP_info =				open("../simulation_data_reformat/genotype/chr1/SNP_info.txt", 'w')
+	#file_SNP_par = 			open("../simulation_data_reformat/SNP_par/TissueID.txt", 'w')
+	file_batch_var_individual = 		open("../simulation_data_reformat/batch_var_individual.txt", 'w')
+	file_batch_var_sample = 		open("../simulation_data_reformat/batch_var_sample.txt", 'w')
+	file_batch_par_batch_batch_hidden = 	open("../simulation_data_reformat/batch_par_batch_batch_hidden.txt", 'w')
+	file_batch_par_batch_hidden_gene = 	open("../simulation_data_reformat/batch_par_batch_hidden_gene.txt", 'w')
+	file_cell_par_SNP_cell = 		open("../simulation_data_reformat/cell_par_SNP_cell.txt", 'w')
+	#file_cell_par_cell_gene = 		open("../simulation_data_reformat/cell_par_cell_gene/xxx.txt", 'w')
+	file_expression = 			open("../simulation_data_reformat/expression.txt", 'w')
+	file_gene_tss =				open("../simulation_data_reformat/gene_tss.txt", 'w')
+	file_gene_SNP_map =			open("../simulation_data_reformat/gene_SNP_map.txt", 'w')
+
+
+	# fill in the following: # -> need, ## -> doesn't
+	#==== chromosome
+	##L = 0								# unit: basepair
+
+	#==== individual
+	##n_individual = 0
+	for i in range(n_individual):
+		file_list_individuals.write(str(i) + '\n')
+
+	#==== tissue
+	##n_tissue = 0
+
+	#==== SNP
+	##n_SNP = 0
+	#SNP_rep = {}	# {individual:[], xxx:[], ...}			# real value lists, in [0,1], for individuals
+	#SNP_pos_list = []
+	#SNP_beta_rep = {} #{tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
+	for individual in SNP_rep:
+		file_SNP_var =				open("../simulation_data_reformat/genotype/chr1/SNP_dosage_" + str(individual) + ".txt", 'w')
+		for SNP in SNP_rep[individual]:
+			file_SNP_var.write(str(SNP) + '\n')
+		file_SNP_var.close()
+
+	for i in range(len(SNP_pos_list)):
+		SNP = str(i)
+		pos = str(SNP_pos_list[i])
+		file_meta.write(SNP + ' ' + pos + '\n')
+
+	for tissue in SNP_beta_rep:
+		file_SNP_par = 				open("../simulation_data_reformat/SNP_par/" + str(tissue) + ".txt", 'w')
+		for gene in SNP_beta_rep[tissue]:
+			file_SNP_par.write(str(gene) + "\t")
+			for beta in SNP_beta_rep[tissue][gene]:
+				file_SNP_par.write(str(beta) + "\t")
+			file_SNP_par.write("\n")
+		file_SNP_par.close()
+
+	#==== gene
+	##n_gene = 0
+	#gene_rep = {} #{individual:{tissue:[], ...}, ...}		# gene expression list for tissue samples for individuals
+	#gene_pos_list = []
+
+	# STEP (for expression.txt):
+	# 1. get the individual-tissue list (this is the sample ID list) first
+	# 2. get the expression matrix then
+	# 3. save the two into files
+	# step#1:
+	sample_list = []
+	sample_index_map = {}
+	count = 0
+	for i in range(n_individual):
+		for j in range(n_tissue):
+			sample = str(i) + '-' + str(j)
+			sample_list.append(sample)
+			sample_index_map[sample] = count
+			count += 1
+	# step#2:
+	n_sample = len(sample_list)
+	expression_matrix = []
+	for i in range(n_gene):
+		expression_matrix.append([])
+		for j in range(n_sample):
+			expression_matrix[-1].append(0)
+	for i in range(n_individual):
+		for j in range(n_tissue):
+			sample = str(i) + '-' + str(j)
+			index = sample_index_map[sample]
+			for k in range(n_gene):
+				expression_matrix[k][index] = gene_rep[i][j][k]
+	# step#3:
+	file_expression.write("Name\tDescription\t")
+	for sample in sample_list:
+		file_expression.write(sample + '\t')
+	file_expression.write('\n')
+	for i in range(n_gene):
+		file_expression.write(str(i) + '\t' + 'nan' + '\t')
+		for j in range(len(expression_matrix[i])):
+			rpkm = expression_matrix[i][j]
+			file_expression.write(str(rpkm) + '\t')
+		file_expression.write('\n')
+
+	for i in range(len(gene_pos_list)):
+		gene = str(i)
+		chr = '1'
+		tss = str(gene_pos_list[i])
+		file_gene_tss.write(gene + '\t' + chr + '\t' + tss + '\n')
+
+	#==== SNP gene pos map
+	#pos_map = {}							# {gene:[snp1, snp2], ...}
+	for gene in pos_map:
+		file_gene_SNP_map.write(str(gene) + "\t")
+		file_gene_SNP_map.write(str(pos_map[gene][0]) + "\t")
+		file_gene_SNP_map.write(str(pos_map[gene][1]))
+		file_gene_SNP_map.write("\n")
+
+	#==== factor_cell
+	##n_factor_cell = 0
+	##var_cell_hidden_factor = []					# n_factor_cell cell hidden factors to be filled in
+	#factor_cell_beta_rep = {} #{cell factor:[], ...}		# coefficient lists for cell factors
+	#beta_factor_cell_rep = {} #{tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
+	for factor in factor_cell_beta_rep:
+		file_cell_par_SNP_cell.write(str(factor) + "\t")
+		for beta in factor_cell_beta_rep[factor]:
+			file_cell_par_SNP_cell.write(str(beta) + "\t")
+		file_cell_par_SNP_cell.write("\n")
+	for tissue in beta_factor_cell_rep:
+		file_cell_par_cell_gene = 		open("../simulation_data_reformat/cell_par_cell_gene/" + str(tissue) + ".txt", 'w')
+		for gene in beta_factor_cell_rep[tissue]:
+			file_cell_par_cell_gene.write(str(gene) + "\t")
+			for beta in beta_factor_cell_rep[tissue][gene]:
+				file_cell_par_cell_gene.write(str(beta) + "\t")
+			file_cell_par_cell_gene.write("\n")
+		file_cell_par_cell_gene.close()
+
+	#==== factor_batch (analogous to cell factor pathway)
+	##n_batch = 0							# n_batch = n_batch_individual + n_batch_sample
+	##n_batch_individual = 0
+	##n_batch_sample = 0
+	##n_factor_batch = 0						# the number of latent batch factors
+	##var_batch_hidden_factor = []					# n_factor_batch batch hidden factors to be filled in
+	#batch_individual_rep = {} #{individual:[], ...}			# batch variable lists for individuals
+	#batch_tissue_sample_rep = {} #{individual:{tissue:[], ...}, ...}	# batch variable lists for tissue samples in individuals
+	#factor_batch_beta_rep = {} #{batch factor:[], ...}		# coefficient lists for batch factors
+	#beta_factor_batch_rep = {} #{gene:[], ...}			# coefficient lists of batch factors for genes
+
+	file_batch_var_individual.write("individual\t")
+	for i in range(n_batch_individual):
+		file_batch_var_individual.write(str(i) + "\t")
+	file_batch_var_individual.write("\n")
+	for individual in batch_individual_rep:
+		file_batch_var_individual.write(str(individual) + "\t")
+		for value in batch_individual_rep[individual]:
+			file_batch_var_individual.write(str(value) + "\t")
+		file_batch_var_individual.write("\n")
+
+	file_batch_var_sample.write("sample\t")
+	for i in range(n_batch_sample):
+		file_batch_var_sample.write(str(i) + "\t")
+	file_batch_var_sample.write("\n")
+	for individual in batch_tissue_sample_rep:			# a sample is defined for per individual per tissue
+		for tissue in batch_tissue_sample_rep[individual]:
+			sample = str(individual) + "-" + str(tissue)
+			file_batch_var_sample.write(sample + "\t")
+			for value in batch_tissue_sample_rep[individual][tissue]:
+				file_batch_var_sample.write(str(value) + "\t")
+			file_batch_var_sample.write("\n")
+
+	for factor in factor_batch_beta_rep:
+		file_batch_par_batch_batch_hidden.write(str(factor) + "\t")
+		for beta in factor_batch_beta_rep[factor]:
+			file_batch_par_batch_batch_hidden.write(str(beta) + "\t")
+		file_batch_par_batch_batch_hidden.write("\n")
+
+	for gene in beta_factor_batch_rep:
+		file_batch_par_batch_hidden_gene.write(str(gene) + "\t")
+		for beta in beta_factor_batch_rep[gene]:
+			file_batch_par_batch_hidden_gene.write(str(beta) + "\t")
+		file_batch_par_batch_hidden_gene.write("\n")
+
+
+
+
+	file_list_individuals.close()# =			open("../simulation_data_reformat/list_individuals.txt", 'w')
+	#file_SNP_var =				open("../simulation_data_reformat/genotype/chr1/SNP_dosage_IndividualID.txt", 'w')
+	file_SNP_info.close()# =				open("../simulation_data_reformat/genotype/chr1/SNP_info.txt", 'w')
+	#file_SNP_par = 			open("../simulation_data_reformat/SNP_par/TissueID.txt", 'w')
+	file_batch_var_individual.close()# = 		open("../simulation_data_reformat/batch_var_individual.txt", 'w')
+	file_batch_var_sample.close()# = 		open("../simulation_data_reformat/batch_var_sample.txt", 'w')
+	file_batch_par_batch_batch_hidden.close()# = 	open("../simulation_data_reformat/batch_par_batch_batch_hidden.txt", 'w')
+	file_batch_par_batch_hidden_gene.close() = 	open("../simulation_data_reformat/batch_par_batch_hidden_gene.txt", 'w')
+	file_cell_par_SNP_cell.close() = 		open("../simulation_data_reformat/cell_par_SNP_cell.txt", 'w')
+	#file_cell_par_cell_gene = 		open("../simulation_data_reformat/cell_par_cell_gene/xxx.txt", 'w')
+	file_expression.close()# = 			open("../simulation_data_reformat/expression.txt", 'w')
+	file_gene_tss.close()# =				open("../simulation_data_reformat/gene_tss.txt", 'w')
+	file_gene_SNP_map.close()# =			open("../simulation_data_reformat/gene_SNP_map.txt", 'w')
 
 
 
