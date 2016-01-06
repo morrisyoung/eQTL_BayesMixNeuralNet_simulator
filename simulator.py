@@ -22,6 +22,7 @@ import numpy as np
 from utility import *
 from simu_sub import *
 from scipy.special import expit					# for logistic function
+import os
 
 
 
@@ -353,8 +354,50 @@ if __name__ == '__main__':
 
 	# DEBUG
 	print "now saving all the simulated data..."
-
+	##===================================================================================================================================
 	# NOTE: I will save two copies of the simulated data, one is in previous format, and another is in the format training program needs
+	##===================================================================================================================================
+
+	## first, build all the necessary sub-dir:
+	#==== the natural dataset
+	if not os.path.isdir("../simulation_data"):
+		os.mkdir("../simulation_data")
+		os.mkdir("../simulation_data/SNP_par")
+		os.mkdir("../simulation_data/cell_par_cell_gene")
+		os.mkdir("../simulation_data/gene")
+	else:
+		if not os.path.isdir("../simulation_data/SNP_par"):
+			os.mkdir("../simulation_data/SNP_par")
+
+		if not os.path.isdir("../simulation_data/cell_par_cell_gene"):
+			os.mkdir("../simulation_data/cell_par_cell_gene")
+
+		if not os.path.isdir("../simulation_data/gene"):
+			os.mkdir("../simulation_data/gene")
+
+	#==== the reformat dataset
+	if not os.path.isdir("../simulation_data_reformat"):
+		os.mkdir("../simulation_data_reformat")
+		os.mkdir("../simulation_data_reformat/SNP_par")
+		os.mkdir("../simulation_data_reformat/cell_par_cell_gene")
+		os.makedirs("../simulation_data_reformat/genotype/chr1")
+	else:
+		if not os.path.isdir("../simulation_data_reformat/SNP_par"):
+			os.mkdir("../simulation_data_reformat/SNP_par")
+
+		if not os.path.isdir("../simulation_data_reformat/cell_par_cell_gene"):
+			os.mkdir("../simulation_data_reformat/cell_par_cell_gene")
+
+		if not os.path.isdir("../simulation_data_reformat/genotype"):
+			os.makedirs("../simulation_data_reformat/genotype/chr1")
+		elif not os.path.isdir("../simulation_data_reformat/genotype/chr1"):
+			os.mkdir("../simulation_data_reformat/genotype/chr1")
+
+	## also, fake the "gene_xymt.txt" (empty in simulation) file:
+	file = open("../simulation_data_reformat/gene_xymt.txt", 'w')
+	file.close()
+
+
 
 	##=================================================
 	##==== parameter saving (copy#1, the nature format)
