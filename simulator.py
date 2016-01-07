@@ -357,6 +357,14 @@ if __name__ == '__main__':
 	##===================================================================================================================================
 	# NOTE: I will save two copies of the simulated data, one is in previous format, and another is in the format training program needs
 	##===================================================================================================================================
+	##================================================================================================================================
+	# NOTE: I will have one more copy as the output of this simulator, which saves the parameters of the model in the standard format
+	##================================================================================================================================
+	## where they are:
+	## copy#1: ../simulation_data/
+	## copy#2: ../simulation_data_reformat/
+	## copy#3: ../simulation_para/
+
 
 	## first, build all the necessary sub-dir:
 	#==== the natural dataset
@@ -755,5 +763,111 @@ if __name__ == '__main__':
 	file_gene_tss.close()# =				open("../simulation_data_reformat/gene_tss.txt", 'w')
 	file_gene_SNP_map.close()# =				open("../simulation_data_reformat/gene_SNP_map.txt", 'w')
 
+
+
+
+
+
+
+
+
+	##===========================================================
+	##==== parameter saving (copy#3, the model, the parameters)
+	##===========================================================
+	## create the folder first of all
+	if not os.path.isdir("../simulation_para"):
+		os.mkdir("../simulation_para")
+		os.mkdir("../simulation_para/para_init_cis_gene")
+		os.mkdir("../simulation_para/para_init_cellenv_gene")
+	else:
+		if not os.path.isdir("../simulation_para/para_init_cis_gene"):
+			os.mkdir("../simulation_para/para_init_cis_gene")
+		if not os.path.isdir("../simulation_para/para_init_cellenv_gene"):
+			os.mkdir("../simulation_para/para_init_cellenv_gene")
+
+	#file_SNP_par = 			open("../simulation_para/para_init_cis_gene/etissueTissueID.txt", 'w')
+	file_batch_par_batch_batch_hidden = 	open("../simulation_para/para_init_batch_batch_hidden.txt", 'w')
+	file_batch_par_batch_hidden_gene = 	open("../simulation_para/para_init_batch_hidden_gene.txt", 'w')
+	file_cell_par_SNP_cell = 		open("../simulation_para/para_init_snp_cellenv.txt", 'w')
+	#file_cell_par_cell_gene = 		open("../simulation_para/para_init_cellenv_gene/etissueTissueID.txt", 'w')
+	file_etissue_list =			open("../simulation_para/etissue_list_init.txt", 'w')
+
+
+	#==== SNP
+	##n_SNP = 0
+	#SNP_beta_rep = {} #{tissue:{gene:[], ...}, ...}			# cis- SNP beta lists for different genes in tissuess
+	for tissue in SNP_beta_rep:
+		file_SNP_par = 				open("../simulation_para/para_init_cis_gene/etissue" + str(tissue) + ".txt", 'w')
+		for gene in SNP_beta_rep[tissue]:
+			file_SNP_par.write(str(gene) + "\t")
+			for beta in SNP_beta_rep[tissue][gene]:
+				file_SNP_par.write(str(beta) + "\t")
+			file_SNP_par.write("\n")
+		file_SNP_par.close()
+
+
+	#==== factor_cell
+	##n_factor_cell = 0
+	#factor_cell_beta_rep = {} #{cell factor:[], ...}		# coefficient lists for cell factors
+	#beta_factor_cell_rep = {} #{tissue:{gene:[], ...}, ...}		# coefficient lists of cell factors for genes in tissues
+	#for factor in factor_cell_beta_rep:	# need them to be in order
+	for i in range(n_factor_cell):
+		factor = i
+		#file_cell_par_SNP_cell.write(str(factor) + "\t")
+		for beta in factor_cell_beta_rep[factor]:
+			file_cell_par_SNP_cell.write(str(beta) + "\t")
+		file_cell_par_SNP_cell.write("\n")
+	#for tissue in beta_factor_cell_rep:	# need them to be in order
+	for i in range(n_tissue):
+		tissue = i
+		file_cell_par_cell_gene = 		open("../simulation_para/para_init_cellenv_gene/etissue" + str(tissue) + ".txt", 'w')
+		#for gene in beta_factor_cell_rep[tissue]:	# need them to be in order
+		for j in range(n_gene):
+			gene = j
+			#file_cell_par_cell_gene.write(str(gene) + "\t")
+			for beta in beta_factor_cell_rep[tissue][gene]:
+				file_cell_par_cell_gene.write(str(beta) + "\t")
+			file_cell_par_cell_gene.write("\n")
+		file_cell_par_cell_gene.close()
+
+
+	#==== factor_batch (analogous to cell factor pathway)
+	##n_batch = 0							# n_batch = n_batch_individual + n_batch_sample
+	##n_batch_individual = 0
+	##n_batch_sample = 0
+	##n_factor_batch = 0						# the number of latent batch factors
+	#factor_batch_beta_rep = {} #{batch factor:[], ...}		# coefficient lists for batch factors
+	#beta_factor_batch_rep = {} #{gene:[], ...}			# coefficient lists of batch factors for genes
+	#for factor in factor_batch_beta_rep:	# need them to be in order
+	for i in range(n_factor_batch):
+		factor = i
+		#file_batch_par_batch_batch_hidden.write(str(factor) + "\t")
+		for beta in factor_batch_beta_rep[factor]:
+			file_batch_par_batch_batch_hidden.write(str(beta) + "\t")
+		file_batch_par_batch_batch_hidden.write("\n")
+
+	#for gene in beta_factor_batch_rep:	# need them to be in order
+	for i in range(n_gene):
+		gene = i
+		#file_batch_par_batch_hidden_gene.write(str(gene) + "\t")
+		for beta in beta_factor_batch_rep[gene]:
+			file_batch_par_batch_hidden_gene.write(str(beta) + "\t")
+		file_batch_par_batch_hidden_gene.write("\n")
+
+
+	#==== tissue list
+	## the TissueID mapping here is identical
+	for i in range(n_tissue):
+		file_etissue_list.write(str(i) + '\t' + str(i) + '\n')
+
+
+
+
+	#file_SNP_par = 					open("../simulation_para/para_init_cis_gene/etissueTissueID.txt", 'w')
+	file_batch_par_batch_batch_hidden.close()# = 		open("../simulation_para/para_init_batch_batch_hidden.txt", 'w')
+	file_batch_par_batch_hidden_gene.close()# = 		open("../simulation_para/para_init_batch_hidden_gene.txt", 'w')
+	file_cell_par_SNP_cell.close()# = 			open("../simulation_para/para_init_snp_cellenv.txt", 'w')
+	#file_cell_par_cell_gene = 				open("../simulation_para/para_init_cellenv_gene/etissueTissueID.txt", 'w')
+	file_etissue_list.close()# =				open("../simulation_para/etissue_list_init.txt", 'w')
 
 
