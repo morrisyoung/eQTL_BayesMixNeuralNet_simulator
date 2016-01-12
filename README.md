@@ -6,7 +6,7 @@ We will simulate according to exactly the neural model assumed (the mixed-layere
 
 One thing to mension is that, this simulator is only used for testing the training code (training algorithm, specifically, the stochastic gradient descent used in the mixed-layered neural network model). This simulator is not simulating the true underlying biological mechanism (though the model is indeed a good abstract of the understood biology).
 
-[*Jan.12, 2016*] I have prepared the tissue hierarchical regulation code (the generation), but now it's not the time for testing that, as we need to test the convergence of the code without this tissue hierarchy first.
+[**Jan.12, 2016**] I have prepared the tissue hierarchical regulation code (the generation), but now it's not the time for testing that, as we need to test the convergence of the code without this tissue hierarchy first.
 
 
 # 2. Data generation
