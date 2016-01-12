@@ -33,7 +33,9 @@ Other notes of the simulator:
 
 ## 1.2 Hierarchy regulator
 
-The hierarchy regulation part assumes a given hierarchy, and generate all the nodes from root, with a Gaussian with mean as parent node and variance as the corresponding branch length. **_Note:_** More discussions will be followed when the code is working in the program.
+The hierarchy regulation part assumes a given hierarchy, and generate all the nodes from root, with a Gaussian with mean as parent node and variance as the corresponding branch length.
+
+**_Note:_** More discussions will be followed when the code is working in the program.
 
 
 ## 1.3 Partitioner
