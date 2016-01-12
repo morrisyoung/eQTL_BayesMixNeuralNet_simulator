@@ -14,7 +14,7 @@ One thing to mension is that, this simulator is only used for testing the traini
 The current dir is for code of the simulator, and simulated dataset is in "../simulation_data/", "../simulation_data_reformat/" and "../simulation_para/". The first folder is for the natural output of the simulated data (that was designed with the first version of this simulator); the "reformat" folder is for the simulated data in standard format (that the training program recognizes); and the "para" folder is for the parameters in this model (all the parameters along three pathways), that are in standard format the training program recognizes.
 
 
-Please see xxx for the standard data format (source data, model parameters) the training program recognizes.
+Please see [the training program repo](https://github.com/morrisyoung/eQTL_cplusplus) for the standard data format (source data, model parameters) the training program recognizes.
 
 
 Note, the simulator will generate the following folders if they are not there:
