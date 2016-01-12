@@ -4,7 +4,7 @@ This is the description (documentation) of the simulator.
 
 ## 1.1 Main simulation
 
-We will simulate according to exactly the neural model assumed (the mixed-layered network model). Specifically, there are three pathways from the SNP and batch variables to the gene expression level, the **_cis_- regulation** (each gene has it's own _cis_- regulators), **cell factor hidden layer**, and the **nonlinear batch effect**. The genotype and batch variables are from uniformly random drawing (0-1), and the five parts of parameters are from Gaussian drawing with Spike and Slab sparsity prior. It's optional that tissue hierarchy can be used as a prior on tissue-specific parameters (_cis_- regulation, cell factor regulation). The gene expression levels (and other hidden variables) are calculated from the simulated variables and the coefficients with the given graphical model.
+We will simulate according to exactly the neural model assumed (the mixed-layered network model). Specifically, there are three pathways from the SNP and batch variables to the gene expression level, the **_cis_- regulation** (each gene has it's own _cis_- regulators), **hidden cell factor**, and the **nonlinear batch effect**. The genotype and batch variables are from uniformly random drawing (0-1), and the five parts of parameters are from Gaussian drawing with Spike and Slab sparsity prior. It's optional that tissue hierarchy can be used as a prior on tissue-specific parameters (_cis_- regulation, cell factor regulation). The gene expression levels (and other hidden variables) are calculated from the simulated variables and the coefficients with the given graphical model.
 
 The source data to be simulated are:
 
