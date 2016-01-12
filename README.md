@@ -4,6 +4,8 @@ This is the description (documentation) of the simulator.
 
 We will simulate according to exactly the neural model assumed (the mixed-layered network model). Specifically, there are three pathways from the SNP and batch variables to the gene expression level, the _cis_- regulation (each gene has it's own _cis_- regulators), cell factor hidden layer, and the nonlinear batch effect.
 
+The hierarchy regulation part assumes a given hierarchy, and generate all the nodes from root, with a Gaussian with mean as parent node and variance as the corresponding branch length.
+
 One thing to mension is that, this simulator is only used for testing the training code (training algorithm, specifically, the stochastic gradient descent used in the mixed-layered neural network model). This simulator is not simulating the true underlying biological mechanism (though the model is indeed a good abstract of the understood biology).
 
 [**_Jan.12, 2016_**] I have prepared the tissue hierarchical regulation code (the generation), but now it's not the time for testing that, as we need to test the convergence of the code without this tissue hierarchy first.
@@ -45,4 +47,16 @@ so make sure you have the access to create them when running the program.
 
 1. Numpy [http://www.numpy.org/]
 2. Scipy [http://www.scipy.org/]
+
+
+# 4. How to use
+
+python simulator.py
+
+
+
+# 5. Logs
+
+Last updated on **_Jan.12, 2016_**.
+
 
