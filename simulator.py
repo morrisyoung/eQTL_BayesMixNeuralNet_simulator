@@ -2,7 +2,7 @@
 ## Output: expression level for some genes
 ## function: generate the coefficients according to the specified graphical model (the neural model in a Bayesian approach), and generate the corresponding expression level for ALL genes
 ## NOTE:
-##	1. we should simulate tissue specificity and consistency (tissue hierarchy), as the modeling takes consideration of that;
+##	1. [done] we should simulate tissue specificity and consistency (tissue hierarchy), as the modeling takes consideration of that;
 ##	2. when we say a factor, it's latent factor condensed from some original variables;
 ##	3. TODO: in next stage of simulation, we can use the true genotype with fake beta to generate the expression profile, as the genotype distribution (MAF) may not be exactly what we assume here;
 ##	4. we have all the coefficients one more item, which is the intercept of the regression: cis-SNP, SNP-cell factor, cell factor-gene, batch-batch factor, batch factor-gene
