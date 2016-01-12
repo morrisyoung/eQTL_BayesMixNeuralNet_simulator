@@ -40,7 +40,9 @@ Note, the simulator will generate the following folders if they are not there:
 so make sure you have the access to create them when running the program.
 
 
-# 3. How to use
+# 3. Dependency
 
 
-xxx
+1. Numpy [http://www.numpy.org/]
+2. Scipy [http://www.scipy.org/]
+
