@@ -1,5 +1,3 @@
-This is the description (documentation) of the simulator.
-
 # 1. Algorithms
 
 ## 1.1 Main simulation
@@ -44,9 +42,8 @@ There is also a partitioner. This is used to partition the full expression tenso
 
 ## 1.4 More
 
-One thing to mension is that, this simulator is only used for testing the training code (training algorithm, specifically, the stochastic gradient descent used in the mixed-layered neural network model). This simulator is not simulating the true underlying biological mechanism (though the model is indeed a good abstract of the understood biology).
-
-[**_Jan.12, 2016_**] I have prepared the tissue hierarchical regulation code (the generation), but now it's not the time for testing that, as we need to test the convergence of the code without this tissue hierarchy first.
+1. This simulator is only used for testing the training code (training algorithm, specifically, the stochastic gradient descent used in the mixed-layered neural network model). This simulator is not simulating the true underlying biological mechanism (though the model is indeed a good abstract of the understood biology).
+2. [**_Jan.12, 2016_**] I have prepared the tissue hierarchical regulation code (the generation), but now it's not the time for testing that, as we need to test the convergence of the code without this tissue hierarchy first.
 
 
 # 2. Data generation
