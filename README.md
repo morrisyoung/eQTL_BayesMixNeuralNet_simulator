@@ -67,11 +67,11 @@ Note, the simulator will generate the following folders if they are not there:
 ../simulation_data_reformat/genotype
 ../simulation_data_reformat/genotype/chr1
 
-
 ../simulation_para
 ../simulation_para/para_init_cis_gene
 ../simulation_para/para_init_cellenv_gene
 ```
+(there are still some redundency in the second folder, as we won't load the model parameters from there, but we still save a copy of the model parameters there)
 
 so make sure you have the access to create them when running the program.
 
@@ -92,6 +92,6 @@ so make sure you have the access to create them when running the program.
 
 # 5. Logs
 
-Last updated on **_Jan.12, 2016_**.
+Last updated on **_Jan.13, 2016_**.
 
 
