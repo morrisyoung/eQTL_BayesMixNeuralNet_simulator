@@ -18,7 +18,7 @@ The model (coefficients) to be simulated is:
 4. genotype to cell factor regulation
 5. cell factor to gene expression regulation (with hierarchy prior or not)
 
-In next step, we can probably build a better simulator with the true genotype but simulated model (the principle from Itsik: mingle the simulation with real data).
+In next step, we can probably build a better simulator with the true genotype but simulated model (the principle from Itsik: mingle the simulation with real data). But I think the current simulation of these variables (genotype and batch variables) won't affect us to evaluate our code of training program.
 
 Other notes of the simulator:
 
