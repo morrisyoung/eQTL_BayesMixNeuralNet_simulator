@@ -102,12 +102,12 @@ if __name__ == '__main__':
 	#==== gene
 	n_gene = 2000				# 2K, so gene density is 1/50,000bp
 	#==== factor_cell
-	n_factor_cell = 400			# as evaluated empirically
+	n_factor_cell = 400			# as evaluated empirically			## NOTE: this should be addressed in training program
 	#==== factor_batch (analogous to cell factor pathway)
 	n_batch = 229
 	n_batch_individual = 160		# as in GTEx.v.4
 	n_batch_sample = 69			# as in GTEx.v.4
-	n_factor_batch = 50			# as evaluated empirically
+	n_factor_batch = 50			# as evaluated empirically			## NOTE: this should be addressed in training program
 	##==============================================================================================================
 
 

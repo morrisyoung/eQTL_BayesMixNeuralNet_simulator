@@ -1,7 +1,15 @@
 ## functions: simulate given parts in the models
 ## notes:
 ##	1. to add the hierarchical regulation (hierarchy code has been finished)
-##	2. xxx
+##	2. [TODO] we need to deal well with the intercept item in the regression, as we might have some true signal from there
+##	we need the following intercept items with the corresponding interpretations:
+##		a. intercept from SNPs to cell factors (a cell factor that always exits and won't be affected by sequence variation)
+##		b. intercept from cell factors to genes (the signal from cell env that always exists in this env/tissue and won't be affected by SNP)
+##		c. intercept from batch variables to batch hidden variables (symmetric to above)
+##		d. intercept from batch hidden variables to genes (symmetric to above)
+##		e. intercept from SNP to genes (the signal from cis- regulation that always exists in this env/tissue and won't be affected be SNP)
+##	in a word, we add intercept to every part (of 5 parts) in the regression
+##	3. xxx
 
 
 import numpy as np
@@ -227,7 +235,7 @@ def simu_batch_factor(n_batch, n_batch_individual, n_batch_sample, n_factor_batc
 	##==== batch_tissue_sample_rep
 	for i in batch_tissue_sample_rep:
 		for j in batch_tissue_sample_rep[i]:
-			for k in range(len(batch_tissue_sample_rep[i][j])):	
+			for k in range(len(batch_tissue_sample_rep[i][j])):
 				value = np.random.random_sample()
 				batch_tissue_sample_rep[i][j][k] = value
 
