@@ -85,9 +85,9 @@ so make sure you have the access to create them when running the program.
 
 # 4. How to use
 
-1. the simulator: python simulator.py
-2. the error_adder: python error_adder.py
-3. the partitioner (training set and testing set; need to set the length of three dimensions): python partition_train_test.py
+1. the simulator: python simulator.py (--> ../simulation_data/  ../simulation_data_reformat/  ../simulation_para/)
+2. the error_adder: python error_adder.py (--> ../simulation_para_with_error/)
+3. the partitioner (training set and testing set; need to set the length of three dimensions): python partition_train_test.py (--> ../simulation_data_reformat/list_samples_train.txt and list_samples_train.txt)
 
 
 
