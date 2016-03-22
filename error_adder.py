@@ -2,10 +2,10 @@
 #
 ## Feb.4: it seems not necessary to do this, as we are going wild even we start from the real parameter values
 #
-## Feb.8: we will do this, to see how the likelihood curve changes
+## Feb.8: we will do this, to see how the likelihood curve changes; we should do this anyway
 #
 ## notes:
-#	1. we should run this after the simulator routine
+#	1. we should run this after the simulator routine;
 
 
 
@@ -54,6 +54,7 @@ if __name__ == "__main__":
 
 
 	##========= cis_gene
+	# TODO: parameter tunable
 	lamb = 0
 	std = 1
 
@@ -86,6 +87,7 @@ if __name__ == "__main__":
 
 
 	##========= cellenv_gene
+	# TODO: parameter tunable
 	lamb = 0
 	std = 1
 
@@ -115,6 +117,7 @@ if __name__ == "__main__":
 
 
 	##========= snp_cellenv
+	# TODO: parameter tunable
 	lamb = 0
 	std = 1
 
@@ -140,6 +143,7 @@ if __name__ == "__main__":
 
 
 	##========= batch_batch_hidden
+	# TODO: parameter tunable
 	lamb = 0
 	std = 1
 
@@ -165,6 +169,7 @@ if __name__ == "__main__":
 
 
 	##========= batch_hidden_gene
+	# TODO: parameter tunable
 	lamb = 0
 	std = 1
 
@@ -191,4 +196,5 @@ if __name__ == "__main__":
 
 
 	print "error adding done."
+
 

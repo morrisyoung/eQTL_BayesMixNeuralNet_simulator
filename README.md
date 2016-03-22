@@ -86,12 +86,17 @@ so make sure you have the access to create them when running the program.
 # 4. How to use
 
 1. the simulator: python simulator.py
-2. the partitioner (training set and testing set; need to set the length of three dimensions): python partition_train_test.py
+2. the error_adder: python error_adder.py
+3. the partitioner (training set and testing set; need to set the length of three dimensions): python partition_train_test.py
 
 
 
 # 5. Logs
 
+Last updated on **_Mar.22, 2016_**.
+
 Last updated on **_Jan.13, 2016_**.
+
+
 
 
